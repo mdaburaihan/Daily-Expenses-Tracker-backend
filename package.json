@@ -21,8 +21,6 @@
     "moment": "^2.29.1",
     "mongoose": "^5.5.9",
     "mongoose-auto-increment": "^5.0.1",
-    "socket.io": "^4.1.1",
-    "underscore": "^1.9.1",
-    "yargs": "^17.0.1"
+    "underscore": "^1.9.1"
   }
 }
