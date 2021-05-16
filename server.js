@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
     socket.on("disconnect", () => {
         io.emit("message", "A user has left.");
     });
-});
+}); 
 
 
 server.listen(port,  () => console.log(`Listening to port ${port}...`));
