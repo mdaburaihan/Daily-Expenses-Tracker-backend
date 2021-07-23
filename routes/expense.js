@@ -160,6 +160,8 @@ router.get('/list',[auth] , async (req, res)=>{
             }
         }
 
+        console.log(returnArr)
+
         res.status(200).send(returnArr);
     }catch(expp){
         //console.log(expp);

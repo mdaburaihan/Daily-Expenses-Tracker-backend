@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 
 router.get('/me', [admin,auth], async (req, res) => {
-    const user = await User.findById(req.user._id).select('-password');
+    const user = await User.findById(req.user._id).select('password');
     res.send(user);
 });
 
@@ -33,6 +33,7 @@ router.post('/', async(req, res) => {
 
     //res.send(user);
     const token = user.generateAuthToken();
+    console.log("token", token)
     res.header('x-auth-token',token).send(_.pick(user, ['_id', 'name', 'email']));
    
     

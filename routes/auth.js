@@ -76,8 +76,8 @@ router.post('/signup', async(req, res) => {
 
 function validate(req){
     const schema = {
-        email: Joi.string().min(5).max(50).required().email(),
-        password: Joi.string().min(5).max(50).required()
+        email: Joi.string().required().email(),
+        password: Joi.string().required()
     };
 
     return Joi.validate(req, schema);
