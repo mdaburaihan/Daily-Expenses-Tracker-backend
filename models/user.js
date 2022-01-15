@@ -20,9 +20,13 @@ const userSchema = new mongoose.Schema({
 	},
 	user_password: {
 	   type: String,
-	   required: true
+	   //required: true
 	},
-	isAdmin: Boolean,
+	//isAdmin: Boolean,
+	sso_flag: {
+		type: Boolean,
+		default: false
+	},
 	doc_utc: {
 		type: Number,
 		default: 0

@@ -1,9 +1,13 @@
+const dotenv = require('dotenv')
+dotenv.config()
 const Joi = require('Joi');
 const {User} = require('../models/user');
 const express = require('express');
 const router = express.Router();
 const moment = require('moment');
 const bcrypt = require('bcryptjs');
+const GoogleStrategy = require('passport-google-oauth2').Strategy;
+const passport = require('passport');
 
 router.post('/', async(req, res) => {
     const { error } = validate(req.body);
@@ -72,6 +76,46 @@ router.post('/signup', async(req, res) => {
         res.status(500).send({ message : "Some error occured." });
     }
     
+});
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET_KEY,
+    callbackURL: `${process.env.LOCAL_HOST_URL}auth/google/callback`
+},
+async function (req, accessToken, refreshToken, profile, done) {
+    // if user already exist in your dataabse login otherwise save data and signup
+    //console.log("===profile===", profile)
+
+    let user = await User.findOne({ user_email: profile.email });
+
+    if(!user){
+        let insert_obj = {
+            user_name: profile.displayName,
+            user_email: profile.email,
+            user_password: "",
+            contact_no: "",
+            sso_flag: true,
+            profile_pic: profile.picture,
+            doc_utc: moment().unix(),
+            dom_utc: moment().unix()
+        }
+        const userObj = new User(insert_obj);
+        await userObj.save();
+    }
+    return done(null, profile);
+}
+));
+
+router.get('/google', passport.authenticate('google', {scope: ['openid','profile', 'email']}));
+
+router.get('/google/callback', passport.authenticate('google', {failureRedirect: '/auth/google/fail'}), (req, res, next) => {
+    //console.log(req.user, req.isAuthenticated());
+    res.send(req.isAuthenticated());
+})
+
+router.get('/google/fail', (req, res, next) => {
+    res.send('user logged in failed');
 });
 
 function validate(req){
